@@ -1,0 +1,460 @@
+{% extends "shell.html" %}
+
+{% block styles %}
+{% endblock %}
+
+{% block page %}
+<!-- Main content -->
+<div class="pt-20 px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <!-- Left column - Zone Form -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <form id="zoneForm">
+                    <!-- Symbol/Ticker -->
+                    <div class="relative z-10 mb-6">
+                        <input type="text" id="symbol" name="symbol"
+                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                               placeholder="" autocomplete="off" required/>
+                        <label for="symbol"
+                               class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Symbol</label>
+                        <!-- Dropdown for search results -->
+                        <div id="symbolSearchResults"
+                             class="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden z-20">
+                        </div>
+                    </div>
+
+                    <!-- Zone Type Selection -->
+                    <ul class="grid w-full gap-0 md:grid-cols-2 mb-6">
+                        <li>
+                            <input type="radio" id="long-zone" name="zone_type" value="Long Zone"
+                                   class="hidden peer" required checked/>
+                            <label for="long-zone"
+                                   class="inline-flex items-center text-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:text-green-500 peer-checked:border-green-500 dark:peer-checked:text-green-500 dark:peer-checked:border-green-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="w-full text-sm font-semibold">Long</div>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" id="short-zone" name="zone_type" value="Short Zone"
+                                   class="hidden peer">
+                            <label for="short-zone"
+                                   class="inline-flex items-center text-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:text-red-500 peer-checked:border-red-500 dark:peer-checked:text-red-500 dark:peer-checked:border-red-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="w-full text-sm font-semibold">Short</div>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <!-- Entry Price -->
+                    <div class="relative z-0 mb-6">
+                        <input type="number" id="entry" name="entry" step="0.01" min="0.00"
+                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                               placeholder="" required/>
+                        <label for="entry"
+                               class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Entry
+                            Price</label>
+                    </div>
+
+                    <!-- Stoploss -->
+                    <div class="relative z-0 mb-6">
+                        <input type="number" id="stoploss" name="stoploss" step="0.01" min="0.00"
+                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                               placeholder="" required/>
+                        <label for="stoploss"
+                               class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Stoploss</label>
+                    </div>
+
+                    <!-- Target -->
+                    <div class="relative z-0 mb-6">
+                        <input type="number" id="target" name="target" step="0.01" min="0.00"
+                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                               placeholder="" required/>
+                        <label for="target"
+                               class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Target</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Create Zone
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right column - Zones Table -->
+        <div class="lg:col-span-4">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <div class="relative overflow-x-auto">
+                    <table id="default-table">
+                        <thead>
+                        <tr>
+                            <th>
+                                <span class="flex items-center">
+                                    Symbol
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                    </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Type
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Entry
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Stoploss
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Target
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Status
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
+                                    Actions
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for zone in zones %}
+                        <tr>
+                            <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ zone.symbol }}
+                            </td>
+                            <td class="text-right {% if zone.type == 'Long Zone' %}text-green-500{% else %}text-red-500{% endif %}">
+                                {{ zone.type }}
+                            </td>
+                            <td class="text-right">{{ "%.2f"|format(zone.entry) }}</td>
+                            <td class="text-right">{{ "%.2f"|format(zone.stoploss) }}</td>
+                            <td class="text-right">{{ "%.2f"|format(zone.target) }}</td>
+                            <td class="text-right">
+                                <span class="px-2 py-1 text-xs font-medium
+                                    {% if zone.status == 'Active' %}text-blue-300 bg-blue-900
+                                    {% elif zone.status == 'Entry Hit' %}text-green-300 bg-green-900
+                                    {% elif zone.status == 'Target Hit' %}text-purple-300 bg-purple-900
+                                    {% elif zone.status == 'Stoploss Hit' %}text-red-300 bg-red-900
+                                    {% else %}text-gray-300 bg-gray-900{% endif %} rounded-full">
+                                    {{ zone.status }}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <button type="button" onclick="deleteZone({{ zone.id }})"
+                                        class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+<script>
+    let dataTable;
+
+    // Handle form submission for creating zones
+    document.getElementById('zoneForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const selectedType = document.querySelector('input[name="zone_type"]:checked').value;
+
+        const formData = {
+            symbol: document.getElementById('symbol').value.toUpperCase(),
+            type: selectedType,
+            entry: parseFloat(document.getElementById('entry').value),
+            stoploss: parseFloat(document.getElementById('stoploss').value),
+            target: parseFloat(document.getElementById('target').value)
+        };
+
+        try {
+            const response = await fetch('/api/zones/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('zoneForm').reset();
+                await refreshTable();
+            } else {
+                console.error(data.error || 'Error creating zone', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    // Function to delete a zone
+    async function deleteZone(zoneId) {
+        try {
+            const response = await fetch(`/api/zones/${zoneId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                await refreshTable();
+            } else {
+                const data = await response.json();
+                console.error(data.error || 'Error deleting zone');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // Function to refresh the table
+    async function refreshTable() {
+        try {
+            const response = await fetch('/api/zones');
+            const data = await response.json();
+
+            // If DataTable exists, destroy it
+            if (dataTable) {
+                dataTable.destroy();
+            }
+
+            // Update the table HTML
+            document.querySelector('#default-table tbody').innerHTML = data.zones.map(zone => `
+                <tr>
+                    <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">${zone.symbol}</td>
+                    <td class="text-right ${zone.type === 'Long Zone' ? 'text-green-500' : 'text-red-500'}">${zone.type}</td>
+                    <td class="text-right">${zone.entry.toFixed(2)}</td>
+                    <td class="text-right">${zone.stoploss.toFixed(2)}</td>
+                    <td class="text-right">${zone.target.toFixed(2)}</td>
+                    <td class="text-right">
+                        <span class="px-2 py-1 text-xs font-medium ${getStatusClasses(zone.status)} rounded-full">
+                            ${zone.status}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <button type="button" onclick="deleteZone(${zone.id})"
+                                class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Reinitialize DataTable
+            initializeDataTable();
+        } catch (error) {
+            console.error('Error refreshing table:', error);
+        }
+    }
+
+    function getStatusClasses(status) {
+        switch(status) {
+            case 'Active':
+                return 'text-blue-300 bg-blue-900';
+            case 'Entry Hit':
+                return 'text-green-300 bg-green-900';
+            case 'Target Hit':
+                return 'text-purple-300 bg-purple-900';
+            case 'Stoploss Hit':
+                return 'text-red-300 bg-red-900';
+            default:
+                return 'text-gray-300 bg-gray-900';
+        }
+    }
+
+    // Initialize DataTable
+    function initializeDataTable() {
+        dataTable = new simpleDatatables.DataTable("#default-table", {
+            searchable: true,
+            sortable: true,
+            paging: true,
+            perPage: 10,
+            perPageSelect: [5, 10],
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeDataTable();
+    });
+</script>
+
+<!-- Include the symbol search functionality script -->
+<script>
+    // Reuse the same symbol search functionality from alerts.html
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Symbol search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const symbolInput = document.getElementById('symbol');
+        const searchResults = document.getElementById('symbolSearchResults');
+        let selectedIndex = -1;
+        let results = [];
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!symbolInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.add('hidden');
+                selectedIndex = -1;
+            }
+        });
+
+        // Handle keyboard navigation
+        symbolInput.addEventListener('keydown', function(e) {
+            const items = searchResults.children;
+
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (items.length > 0) {
+                        selectedIndex = (selectedIndex + 1) % items.length;
+                        updateSelection(items);
+                    }
+                    break;
+
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (items.length > 0) {
+                        selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
+                        updateSelection(items);
+                    }
+                    break;
+
+                case 'Enter':
+                    e.preventDefault();
+                    if (selectedIndex >= 0 && items[selectedIndex]) {
+                        selectItem(items[selectedIndex]);
+                    }
+                    break;
+
+                case 'Escape':
+                    searchResults.classList.add('hidden');
+                    selectedIndex = -1;
+                    break;
+            }
+        });
+
+        function updateSelection(items) {
+            Array.from(items).forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('bg-gray-100', 'dark:bg-gray-700');
+                } else {
+                    item.classList.remove('bg-gray-100', 'dark:bg-gray-700');
+                }
+            });
+
+            if (selectedIndex >= 0) {
+                items[selectedIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        function selectItem(item) {
+            symbolInput.value = item.textContent;
+            searchResults.classList.add('hidden');
+            selectedIndex = -1;
+            symbolInput.focus();
+        }
+
+        const performSearch = debounce(async (query) => {
+            if (query.length < 1) {
+                searchResults.classList.add('hidden');
+                selectedIndex = -1;
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/tickers/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                searchResults.innerHTML = '';
+                selectedIndex = -1;
+
+                if (data.tickers.length > 0) {
+                    data.tickers.forEach(ticker => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white';
+                        div.textContent = ticker.symbol;
+
+                        div.addEventListener('click', () => {
+                            selectItem(div);
+                        });
+
+                        results.push(ticker);
+                        searchResults.appendChild(div);
+                    });
+                    searchResults.classList.remove('hidden');
+                } else {
+                    searchResults.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error searching tickers:', error);
+            }
+        }, 300);
+
+        symbolInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            performSearch(query);
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}
