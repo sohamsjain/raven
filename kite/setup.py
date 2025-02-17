@@ -4,11 +4,8 @@ import json
 from os.path import join, dirname
 
 
-setup_file_path = join(dirname(__file__), 'kite.json')
-
-
 class Kite:
-    default_setup_file = setup_file_path
+    default_setup_file = join(dirname(__file__), 'kite.json')
     exchanges = []
 
     def __init__(self, init_file=default_setup_file):
@@ -26,9 +23,11 @@ class Kite:
                 self.kite.profile()
                 self.logged_in = True
             except TokenException as te:
-                print('Token Exception: [%s]. \nRegenerating Session\n\n' % te)
+                pass
 
+    def get_login_url(self):
         if self.logged_in is False:
+
             self.api_key = self.read_key_from_settings('api_key')
             if self.api_key is None:
                 self.api_key = input('What is your app''s API key:  ')
@@ -44,38 +43,26 @@ class Kite:
                 self.redirect_uri = input('What is your app''s redirect_uri:  ')
                 self.write_key_to_settings('redirect_uri', self.redirect_uri)
 
-            self.username = self.read_key_from_settings('username')
-            if self.username is None:
-                self.username = input('What is your account''s username:  ')
-                self.write_key_to_settings('username', self.username)
-
-            self.password = self.read_key_from_settings('password')
-            if self.password is None:
-                self.password = input('What is your account''s password:  ')
-                self.write_key_to_settings('password', self.password)
-
-            self.pin = self.read_key_from_settings('pin')
-            if self.pin is None:
-                self.pin = input('What is your account''s pin:  ')
-                self.write_key_to_settings('pin', self.pin)
 
             self.kite = KiteConnect(self.api_key)
             self.url = self.kite.login_url()
 
-            print(self.url)
-            request_token = input("Request Token: ")
+            return self.url
+
+    def create_session(self, request_token):
+
+        try:
             self.session = self.kite.generate_session(request_token=request_token, api_secret=self.api_secret)
+        except:
+            return False
 
-            try:
-                self.access_token = self.session['access_token']
-            except SystemError as se:
-                print('Uh oh, there seems to be something wrong. Error: [%s]' % se)
-                return
-
-            self.session['login_time'] = str(self.session['login_time'])
-            self.write_key_to_settings('session', self.session)
-            self.write_key_to_settings('access_token', self.access_token)
-            self.kite.set_access_token(self.access_token)
+        self.access_token = self.session['access_token']
+        self.session['login_time'] = str(self.session['login_time'])
+        self.write_key_to_settings('session', self.session)
+        self.write_key_to_settings('access_token', self.access_token)
+        self.kite.set_access_token(self.access_token)
+        self.logged_in = True
+        return True
 
     def write_key_to_settings(self, key, value):
         try:
@@ -106,7 +93,3 @@ class Kite:
         except Exception:
             pass
         return None
-
-
-if __name__ == '__main__':
-    k = Kite()

@@ -27,6 +27,9 @@ def create_app(config_class=Config):
     from app.main import bp as main_pb
     app.register_blueprint(main_pb)
 
+    from app.kite import bp as kite_pb
+    app.register_blueprint(kite_pb)
+
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
 
