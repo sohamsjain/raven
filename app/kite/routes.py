@@ -28,14 +28,6 @@ def connect():
             flash('Request token is required', 'error')
             return redirect(url_for('kite.connect'))
 
-    # GET request handling
-    if k.logged_in:
-        print("Logged In Already")
-        return render_template("kiteconnect.html",
-                               title="Kite Connect",
-                               logged_in=k.logged_in,
-                               login_url="")
-    print("Not Logged in yet")
     return render_template("kiteconnect.html",
                            title="Kite Connect",
                            logged_in=k.logged_in,
