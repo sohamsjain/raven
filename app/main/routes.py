@@ -1,8 +1,14 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 from app.models import Alert, Ticker, Zone, db
 from app.model_service import AlertManager, ZoneManager
 from app.main import bp
+
+
+@bp.route('/')
+@bp.route('/index')
+def index():
+    return redirect(url_for('auth.login'))
 
 
 @bp.route('/api/tickers/search')
