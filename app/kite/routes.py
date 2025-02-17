@@ -7,9 +7,12 @@ from kite import *
 @bp.route('/connect', methods=['GET', 'POST'])
 @login_required
 def connect():
+    print("Creating Kite Object")
     k = Kite()
+    print("Kite Object created successfully")
 
     if request.method == 'POST':
+        print("Handling Post Request")
         request_token = request.form.get('request_token')
         if request_token:
             # Attempt to create a new session with the request token
@@ -25,11 +28,12 @@ def connect():
 
     # GET request handling
     if k.logged_in:
+        print("Logged In Already")
         return render_template("kiteconnect.html",
                                title="Kite Connect",
                                logged_in=k.logged_in,
                                login_url="")
-
+    print("Not Logged in yet")
     return render_template("kiteconnect.html",
                            title="Kite Connect",
                            logged_in=k.logged_in,
