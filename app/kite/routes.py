@@ -28,7 +28,9 @@ def connect():
             flash('Request token is required', 'error')
             return redirect(url_for('kite.connect'))
 
+    login_url = k.get_login_url()
+    print(login_url)
     return render_template("kiteconnect.html",
                            title="Kite Connect",
                            logged_in=k.logged_in,
-                           login_url=k.get_login_url())
+                           login_url=login_url)
