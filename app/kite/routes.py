@@ -14,6 +14,8 @@ def connect():
     if request.method == 'POST':
         print("Handling Post Request")
         request_token = request.form.get('request_token')
+        print(f"Request Token: {request_token}")
+        print(f"Secret Key: {k.api_secret}")
         if request_token:
             # Attempt to create a new session with the request token
             if k.create_session(request_token):
