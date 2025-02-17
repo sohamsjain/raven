@@ -15,6 +15,7 @@ class Kite:
         self.kite = None
         self.logged_in = False
         self.api_key = self.read_key_from_settings('api_key')
+        self.api_secret = self.read_key_from_settings('api_secret')
         self.access_token = self.read_key_from_settings('access_token')
         self.session = self.read_key_from_settings('session')
         if self.access_token is not None and self.api_key is not None:
@@ -42,7 +43,6 @@ class Kite:
             if self.redirect_uri is None:
                 self.redirect_uri = input('What is your app''s redirect_uri:  ')
                 self.write_key_to_settings('redirect_uri', self.redirect_uri)
-
 
             self.kite = KiteConnect(self.api_key)
             self.url = self.kite.login_url()
