@@ -52,6 +52,7 @@ class Kite:
     def create_session(self, request_token):
 
         try:
+            self.kite = KiteConnect(api_key=self.api_key, access_token=self.access_token)
             self.session = self.kite.generate_session(request_token=request_token, api_secret=self.api_secret)
         except Exception as e:
             print(e)
