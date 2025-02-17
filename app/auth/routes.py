@@ -9,7 +9,7 @@ from app.models import User
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.alerts'))
 
     form = LoginForm()
     if form.validate_on_submit():
