@@ -44,10 +44,10 @@ class Kite:
                 self.redirect_uri = input('What is your app''s redirect_uri:  ')
                 self.write_key_to_settings('redirect_uri', self.redirect_uri)
 
-            self.kite = KiteConnect(self.api_key)
-            self.url = self.kite.login_url()
+        self.kite = KiteConnect(self.api_key)
+        self.url = self.kite.login_url()
 
-            return self.url
+        return self.url
 
     def create_session(self, request_token):
 
