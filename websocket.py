@@ -1,6 +1,7 @@
 from kiteconnect import KiteTicker
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import logging
+import time
 from sqlalchemy import select
 from app import db, create_app
 from app.models import Ticker
@@ -146,16 +147,37 @@ class TickerManager:
             raise
 
 
+def check_market_hours():
+    """Check if current time is within market hours (8:15 AM - 3:30 PM IST)"""
+    now = datetime.now(timezone(timedelta(hours=5, minutes=30)))  # IST timezone
+    if now.weekday() >= 5:  # Saturday or Sunday
+        return False
+
+    market_start = now.replace(hour=8, minute=0, second=0, microsecond=0)
+    market_end = now.replace(hour=15, minute=30, second=0, microsecond=0)
+    return market_start <= now <= market_end
+
+
 def main():
+    global k
     ticker_manager = None
     try:
-        ticker_manager = TickerManager()
-        ticker_manager.start()
+        while check_market_hours():
+            if not k.logged_in:
+                logger.warning("Kite not logged in. Waiting for login...")
+                time.sleep(60)  # Wait for 1 minute before checking again
+                # Refresh Kite instance to check for new login
+                k = Kite()
+                continue
 
-        # Keep the script running
-        import time
-        while True:
+            if ticker_manager is None:
+                logger.info("Kite logged in. Starting ticker manager...")
+                ticker_manager = TickerManager()
+                ticker_manager.start()
+
             time.sleep(1)
+
+        logger.info("Market hours over. Shutting down...")
     except KeyboardInterrupt:
         logger.info("Stopping WebSocket connection...")
     except Exception as e:
