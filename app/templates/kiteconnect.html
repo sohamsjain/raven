@@ -5,6 +5,15 @@
 
 {% block page %}
 <div class="pt-20">
+    <div class="max-w-sm mx-auto mb-4 flex items-center gap-2 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <span class="text-sm font-medium text-gray-900 dark:text-white">Kite Status:</span>
+        <div class="flex items-center">
+            <div class="h-2.5 w-2.5 rounded-full {% if logged_in %}bg-green-500{% else %}bg-red-500{% endif %} me-2"></div>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+                {% if logged_in %}Connected{% else %}Disconnected{% endif %}
+            </span>
+        </div>
+    </div>
     <form action="{{ url_for('kite.connect') }}" method="POST"
           class="max-w-sm mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <div class="mb-6">
