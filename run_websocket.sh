@@ -11,7 +11,7 @@ while true; do
         # Start a bit before market hours (8:00 AM)
         if [ $hour -eq 8 ] && [ $min -ge 0 ]; then
             echo "Starting ticker script..."
-            python3 /path/to/your/ticker_script.py
+            python3 /home/ubuntu/raven/websocket.py
 
             # After script exits (market close), wait until next day
             echo "Market closed, waiting for next day..."
