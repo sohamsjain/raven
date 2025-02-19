@@ -2,11 +2,13 @@ import requests
 from app.models import *
 
 
-class WhatsAppProvider:
-    def __init__(self):
-        self.api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGUyMzBkNDA1YjU1MWM0MzcwZjdiOCIsIm5hbWUiOiJTZW5zaWJ1bGwiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjY4ZTIzMGQ0MDViNTUxYzQzNzBmN2FjIiwiYWN0aXZlUGxhbiI6IlBST19NT05USExZIiwiaWF0IjoxNzIyNzAzMDA0fQ.ev-HcqoQ14OesvXNM1zgTRZct2onvLGS8p5DjvqdFyc"
+api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGUyMzBkNDA1YjU1MWM0MzcwZjdiOCIsIm5hbWUiOiJTZW5zaWJ1bGwiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjY4ZTIzMGQ0MDViNTUxYzQzNzBmN2FjIiwiYWN0aXZlUGxhbiI6IlBST19NT05USExZIiwiaWF0IjoxNzIyNzAzMDA0fQ.ev-HcqoQ14OesvXNM1zgTRZct2onvLGS8p5DjvqdFyc"
 
-    def send(self, destination, campaign_name, params):
+
+class WhatsAppProvider:
+
+    @classmethod
+    def send(cls, destination, campaign_name, params):
         url = "https://backend.aisensy.com/campaign/t1/api/v2"
 
         headers = {
@@ -14,7 +16,7 @@ class WhatsAppProvider:
         }
 
         payload = {
-            "apiKey": self.api_key,
+            "apiKey": api_key,
             "campaignName": campaign_name,
             "destination": destination,
             "userName": "Sensibull",
@@ -34,10 +36,9 @@ class WhatsAppProvider:
 
 
 class NotificationManager:
-    def __init__(self):
-        self.whatsapp_provider = WhatsAppProvider()
 
-    def send_alert_notification(self, user: User, alert: Alert, current_price: float) -> None:
+    @classmethod
+    def send_alert_notification(cls, user: User, alert: Alert, current_price: float) -> None:
         """Send notification for triggered alert"""
 
         destination = user.phone_number
@@ -48,9 +49,10 @@ class NotificationManager:
         else:
             campaign_name = "alertcrossunder"
 
-        self.whatsapp_provider.send(destination, campaign_name, params)
+        WhatsAppProvider.send(destination, campaign_name, params)
 
-    def send_zone_notification(self, user: User, zone: Zone) -> None:
+    @classmethod
+    def send_zone_notification(cls, user: User, zone: Zone) -> None:
         """Send notification for zone events"""
 
         destination = user.phone_number
@@ -76,4 +78,4 @@ class NotificationManager:
             elif zone.status == ZoneStatus.TARGET_HIT:
                 campaign_name = "targetshort"
 
-        self.whatsapp_provider.send(destination, campaign_name, params)
+        WhatsAppProvider.send(destination, campaign_name, params)
