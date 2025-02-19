@@ -13,10 +13,6 @@ from notification_service import NotificationManager
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('/var/log/raven/websocket.log'),
-        logging.StreamHandler()
-    ]
 )
 logger = logging.getLogger(__name__)
 
