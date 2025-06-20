@@ -8,10 +8,10 @@ from app.main import bp
 @bp.route('/')
 @bp.route('/index')
 def index():
-    # Redirect to signup for new users, or alerts for logged-in users
+    # Show front page for non-authenticated users, redirect to alerts for logged-in users
     if current_user.is_authenticated:
         return redirect(url_for('main.alerts'))
-    return redirect(url_for('auth.signup'))
+    return render_template('index.html', title='Raven - Smart Trading Alerts')
 
 
 @bp.route('/api/tickers/search')

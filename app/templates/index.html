@@ -1,149 +1,138 @@
 {% extends "base.html" %}
 
 {% block content %}
-<nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo">
-            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Raven</span>
-        </a>
-        <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <a href="{{ url_for('auth.logout') }}"
-               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Logout
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-600">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div class="flex items-center space-x-3">
+                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Raven Logo">
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Raven</span>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ url_for('auth.login') }}"
+                   class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                    Sign In
+                </a>
+                <a href="{{ url_for('auth.signup') }}"
+                   class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Main Heading -->
+            <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-5xl dark:text-white">
+                Stock Price Alerts via Whatsapp.
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400">
+                Set price alerts and manage trading zones on equities.<br>
+                Get instant WhatsApp alerts when they trigger.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+                <a href="{{ url_for('auth.signup') }}"
+                   class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                    Start Trading Smarter
+                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
+                <a href="{{ url_for('auth.login') }}"
+                   class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 px-4 bg-white dark:bg-gray-800">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    An Essential Tool for Systematic Trading and Investing
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400 text-lg">
+                    Simple tools to help you stay disciplined in the markets
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Price Alerts -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                        <svg class="w-8 h-8 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 17H4l5 5v-5zM12 3v18"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Simple Alerts</h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Set crossing over/under alerts for any stock and get instant notifications when your price targets are hit.
+                    </p>
+                </div>
+
+                <!-- Trading Zones -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Multi Leg Alerts</h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Create long/short zones with entry, stoploss, and target levels. Track your trades automatically.
+                    </p>
+                </div>
+
+                <!-- WhatsApp Notifications -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                        <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21l4-4 4 4M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">WhatsApp Alerts</h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Receive instant notifications directly on WhatsApp. Never miss an important market move again.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simple CTA Section -->
+    <section class="py-16 px-4">
+        <div class="max-w-2xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Ready to Get Started?
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400 text-lg mb-8">
+                Join the fleet of disciplined investors and systematic traders who never miss an opportunity.
+            </p>
+            <a href="{{ url_for('auth.signup') }}"
+               class="inline-flex justify-center items-center py-3 px-6 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                Create Free Account
             </a>
-            <button data-collapse-toggle="navbar-sticky" type="button"
-                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                    aria-controls="navbar-sticky" aria-expanded="false">
-                <span class="sr-only">Open main menu</span>
-                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                     viewBox="0 0 17 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M1 1h15M1 7h15M1 13h15"/>
-                </svg>
-            </button>
         </div>
-        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                <li>
-                    <a href="#"
-                       class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                       aria-current="page">Alerts</a>
-                </li>
-                <li>
-                    <a href="#"
-                       class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Zones</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="pt-20 px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <!-- Left column - Alert Form -->
-        <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Create New Alert</h2>
-                <form>
-                    <!-- Symbol/Ticker -->
-                    <div class="mb-6">
-                        <label for="symbol"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Symbol</label>
-                        <input type="text" id="symbol" name="symbol"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               placeholder="AAPL" required>
-                    </div>
+    </section>
 
-                    <!-- Alert Type -->
-                    <div class="mb-6">
-                        <label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alert
-                            Type</label>
-                        <select id="type" name="type"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="CROSS_OVER">Cross Over</option>
-                            <option value="CROSS_UNDER">Cross Under</option>
-                        </select>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="mb-6">
-                        <label for="price"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                        <input type="number" step="0.01" id="price" name="price"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               required>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Create Alert
-                    </button>
-                </form>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-600">
+        <div class="max-w-screen-xl mx-auto p-4">
+            <div class="text-center">
+                <span class="text-sm text-gray-500 dark:text-gray-400">
+                    © 2025 <span class="font-semibold">Raven</span>. Stock price alerts via whatsapp for systematic investment and trading.
+                </span>
             </div>
         </div>
-
-        <!-- Right column - Alerts Table -->
-        <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Active Alerts</h2>
-                    <div class="flex items-center">
-                        <div class="relative">
-                            <input type="text" id="table-search"
-                                   class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                   placeholder="Search for alerts">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Symbol</th>
-                            <th scope="col" class="px-6 py-3">Type</th>
-                            <th scope="col" class="px-6 py-3">Price</th>
-                            <th scope="col" class="px-6 py-3">Status</th>
-                            <th scope="col" class="px-6 py-3">Created</th>
-                            <th scope="col" class="px-6 py-3">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for alert in alerts %}
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ alert.symbol }}
-                            </th>
-                            <td class="px-6 py-4">{{ alert.type }}</td>
-                            <td class="px-6 py-4">{{ alert.price }}</td>
-                            <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-xs font-medium {% if alert.status == 'Active' %}text-green-700 bg-green-100{% else %}text-yellow-700 bg-yellow-100{% endif %} rounded-full">
-                                        {{ alert.status }}
-                                    </span>
-                            </td>
-                            <td class="px-6 py-4">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td class="px-6 py-4">
-                                <button type="button"
-                                        class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>
 </div>
 {% endblock %}
