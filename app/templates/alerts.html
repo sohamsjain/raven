@@ -82,6 +82,16 @@
                             </th>
                             <th class="text-right">
                                 <span class="flex items-center">
+                                    Last Price
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
                                     Type
                                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -92,7 +102,7 @@
                             </th>
                             <th class="text-right">
                                 <span class="flex items-center">
-                                    Price
+                                    Alert Price
                                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -136,6 +146,13 @@
                         {% for alert in alerts %}
                         <tr>
                             <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ alert.symbol }}
+                            </td>
+                            <td class="text-right">
+                                {% if alert.ticker.last_price %}
+                                    {{ "%.2f"|format(alert.ticker.last_price) }}
+                                {% else %}
+                                    <span class="text-gray-500 dark:text-gray-400">-</span>
+                                {% endif %}
                             </td>
                             <td class="text-right {% if alert.type == 'Crossing Over' %}text-green-500{% else %}text-red-500{% endif %}">
                                 {{ alert.type }}
@@ -238,6 +255,9 @@
             document.querySelector('#default-table tbody').innerHTML = data.alerts.map(alert => `
                 <tr>
                     <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">${alert.symbol}</td>
+                    <td class="text-right">
+                        ${alert.last_price ? alert.last_price.toFixed(2) : '<span class="text-gray-500 dark:text-gray-400">-</span>'}
+                    </td>
                     <td class="text-right ${alert.type === 'Crossing Over' ? 'text-green-500' : 'text-red-500'}">
                         ${alert.type}
                     </td>
@@ -361,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function selectItem(item) {
-        symbolInput.value = item.textContent;
+        symbolInput.value = item.getAttribute('data-symbol');
         searchResults.classList.add('hidden');
         selectedIndex = -1;
         symbolInput.focus();
@@ -386,8 +406,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create and append result items
                 data.tickers.forEach(ticker => {
                     const div = document.createElement('div');
-                    div.className = 'px-4 py-2 text-white hover:bg-gray-100 dark:hover:bg-gray-500 cursor-pointer';
-                    div.textContent = ticker.symbol;
+                    div.className = 'px-4 py-2 flex justify-between items-center text-white hover:bg-gray-100 dark:hover:bg-gray-500 cursor-pointer';
+                    div.setAttribute('data-symbol', ticker.symbol);
+
+                    // Create symbol span
+                    const symbolSpan = document.createElement('span');
+                    symbolSpan.textContent = ticker.symbol;
+
+                    // Create price span (aligned right)
+                    const priceSpan = document.createElement('span');
+                    priceSpan.className = 'text-sm text-gray-400 dark:text-gray-300';
+                    priceSpan.textContent = ticker.last_price ? ticker.last_price.toFixed(2) : '-';
+
+                    div.appendChild(symbolSpan);
+                    div.appendChild(priceSpan);
 
                     div.addEventListener('click', () => {
                         selectItem(div);

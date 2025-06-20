@@ -100,6 +100,16 @@
                             </th>
                             <th class="text-right">
                                 <span class="flex items-center">
+                                    Last Price
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="text-right">
+                                <span class="flex items-center">
                                     Type
                                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -164,6 +174,13 @@
                         {% for zone in zones %}
                         <tr>
                             <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ zone.symbol }}
+                            </td>
+                            <td class="text-right">
+                                {% if zone.ticker.last_price %}
+                                    {{ "%.2f"|format(zone.ticker.last_price) }}
+                                {% else %}
+                                    <span class="text-gray-500 dark:text-gray-400">-</span>
+                                {% endif %}
                             </td>
                             <td class="text-right {% if zone.type == 'Long Zone' %}text-green-500{% else %}text-red-500{% endif %}">
                                 {{ zone.type }}
@@ -271,6 +288,9 @@
             document.querySelector('#default-table tbody').innerHTML = data.zones.map(zone => `
                 <tr>
                     <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">${zone.symbol}</td>
+                    <td class="text-right">
+                        ${zone.last_price ? zone.last_price.toFixed(2) : '<span class="text-gray-500 dark:text-gray-400">-</span>'}
+                    </td>
                     <td class="text-right ${zone.type === 'Long Zone' ? 'text-green-500' : 'text-red-500'}">${zone.type}</td>
                     <td class="text-right">${zone.entry.toFixed(2)}</td>
                     <td class="text-right">${zone.stoploss.toFixed(2)}</td>
@@ -408,7 +428,7 @@
         }
 
         function selectItem(item) {
-            symbolInput.value = item.textContent;
+            symbolInput.value = item.getAttribute('data-symbol');
             searchResults.classList.add('hidden');
             selectedIndex = -1;
             symbolInput.focus();
@@ -431,8 +451,20 @@
                 if (data.tickers.length > 0) {
                     data.tickers.forEach(ticker => {
                         const div = document.createElement('div');
-                        div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white';
-                        div.textContent = ticker.symbol;
+                        div.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white';
+                        div.setAttribute('data-symbol', ticker.symbol);
+
+                        // Create symbol span
+                        const symbolSpan = document.createElement('span');
+                        symbolSpan.textContent = ticker.symbol;
+
+                        // Create price span (aligned right)
+                        const priceSpan = document.createElement('span');
+                        priceSpan.className = 'text-sm text-gray-400 dark:text-gray-300';
+                        priceSpan.textContent = ticker.last_price ? ticker.last_price.toFixed(2) : '-';
+
+                        div.appendChild(symbolSpan);
+                        div.appendChild(priceSpan);
 
                         div.addEventListener('click', () => {
                             selectItem(div);

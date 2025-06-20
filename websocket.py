@@ -459,7 +459,7 @@ class TickerManager:
 
         while True:
             if next_day.weekday() < 5:  # Monday to Friday
-                return next_day.replace(hour=9, minute=15, second=0, microsecond=0)
+                return next_day.replace(hour=8, minute=15, second=0, microsecond=0)
             next_day += timedelta(days=1)
 
     def get_candle_stats(self):

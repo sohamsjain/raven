@@ -8,7 +8,10 @@ from app.main import bp
 @bp.route('/')
 @bp.route('/index')
 def index():
-    return redirect(url_for('auth.login'))
+    # Redirect to signup for new users, or alerts for logged-in users
+    if current_user.is_authenticated:
+        return redirect(url_for('main.alerts'))
+    return redirect(url_for('auth.signup'))
 
 
 @bp.route('/api/tickers/search')
@@ -22,7 +25,7 @@ def search_tickers():
     return jsonify({
         'tickers': [{
             'symbol': ticker.symbol,
-            # Add any other ticker info you want to display
+            'last_price': ticker.last_price
         } for ticker in tickers]
     })
 
@@ -46,7 +49,8 @@ def get_alerts():
             'type': alert.type,
             'price': alert.price,
             'status': alert.status,
-            'created_at': alert.created_at.isoformat()
+            'created_at': alert.created_at.isoformat(),
+            'last_price': alert.ticker.last_price if alert.ticker else None
         } for alert in alerts]
     })
 
@@ -77,7 +81,8 @@ def create_alert():
                 'type': alert.type,
                 'price': alert.price,
                 'status': alert.status,
-                'created_at': alert.created_at.isoformat()
+                'created_at': alert.created_at.isoformat(),
+                'last_price': alert.ticker.last_price if alert.ticker else None
             }
         }), 201
 
@@ -131,7 +136,8 @@ def update_alert(alert_id):
                     'type': updated_alert.type,
                     'price': updated_alert.price,
                     'status': updated_alert.status,
-                    'created_at': updated_alert.created_at.isoformat()
+                    'created_at': updated_alert.created_at.isoformat(),
+                    'last_price': updated_alert.ticker.last_price if updated_alert.ticker else None
                 }
             }), 200
         return jsonify({'error': 'Alert not found'}), 404
@@ -165,7 +171,8 @@ def get_zones():
             'entry_at': zone.entry_at.isoformat() if zone.entry_at else None,
             'target_at': zone.target_at.isoformat() if zone.target_at else None,
             'stoploss_at': zone.stoploss_at.isoformat() if zone.stoploss_at else None,
-            'failed_at': zone.failed_at.isoformat() if zone.failed_at else None
+            'failed_at': zone.failed_at.isoformat() if zone.failed_at else None,
+            'last_price': zone.ticker.last_price if zone.ticker else None
         } for zone in zones]
     })
 
@@ -200,7 +207,8 @@ def create_zone():
                 'stoploss': zone.stoploss,
                 'target': zone.target,
                 'status': zone.status,
-                'created_at': zone.created_at.isoformat()
+                'created_at': zone.created_at.isoformat(),
+                'last_price': zone.ticker.last_price if zone.ticker else None
             }
         }), 201
 
@@ -257,7 +265,8 @@ def update_zone(zone_id):
                     'stoploss': updated_zone.stoploss,
                     'target': updated_zone.target,
                     'status': updated_zone.status,
-                    'created_at': updated_zone.created_at.isoformat()
+                    'created_at': updated_zone.created_at.isoformat(),
+                    'last_price': updated_zone.ticker.last_price if updated_zone.ticker else None
                 }
             }), 200
         return jsonify({'error': 'Zone not found'}), 404
