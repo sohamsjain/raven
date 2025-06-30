@@ -5,7 +5,7 @@ import time
 from collections import defaultdict, deque
 from sqlalchemy import select
 from app import db, create_app
-from app.models import Ticker
+from app.models import Ticker, User
 from kite import Kite
 from app.model_service import AlertManager, ZoneManager
 from notification_service import NotificationManager
@@ -75,9 +75,13 @@ class TickerManager:
     def initialize_connection(self):
         """Initialize KiteTicker connection"""
         try:
+            del self.k
             self.k = Kite()
             if not self.k.logged_in:
                 logger.error("Kite not logged in")
+                admins = User.query.where(User.is_admin==True).all()
+                for admin in admins:
+                    NotificationManager.send_kite_login_alert(admin)
                 return False
 
             self.kws = KiteTicker(self.k.api_key, self.k.access_token)
@@ -157,7 +161,7 @@ class TickerManager:
         with self.data_lock:
             # Check if we need to create a new candle
             if (instrument_token not in self.current_candles or
-                self.current_candles[instrument_token].timestamp != candle_timestamp):
+                    self.current_candles[instrument_token].timestamp != candle_timestamp):
 
                 # Save previous candle if it exists
                 if instrument_token in self.current_candles:
@@ -350,7 +354,8 @@ class TickerManager:
                     # Log every 100th tick to avoid spam
                     current_candle = self.current_candles.get(instrument_token)
                     if current_candle and current_candle.tick_count % 100 == 0:
-                        logger.debug(f"{self.tickers[instrument_token].symbol}: Price={price}, Time={last_trade_time}, Candle={current_candle}")
+                        logger.debug(
+                            f"{self.tickers[instrument_token].symbol}: Price={price}, Time={last_trade_time}, Candle={current_candle}")
 
             except Exception as e:
                 logger.error(f"Error processing tick: {e}")

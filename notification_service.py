@@ -79,3 +79,11 @@ class NotificationManager:
                 campaign_name = "targetshort"
 
         WhatsAppProvider.send(destination, campaign_name, params)
+
+    @classmethod
+    def send_kite_login_alert(cls, user: User) -> None:
+        """Send notification for zone events"""
+
+        destination = user.phone_number
+        campaign_name = "kite_login_alert"
+        WhatsAppProvider.send(destination, campaign_name, None)

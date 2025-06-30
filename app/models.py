@@ -92,6 +92,7 @@ def load_user(id):
 class User(SearchableMixin, UserMixin, db.Model):
     __searchable__ = ['name']
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    is_admin: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False, nullable=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(100))
     email: so.Mapped[str] = so.mapped_column(sa.String(120), index=True, unique=True)
     phone_number: so.Mapped[str] = so.mapped_column(sa.String(20), index=True, unique=True)
