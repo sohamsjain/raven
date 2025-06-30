@@ -79,9 +79,10 @@ class TickerManager:
             self.k = Kite()
             if not self.k.logged_in:
                 logger.error("Kite not logged in")
-                admins = User.query.where(User.is_admin==True).all()
-                for admin in admins:
-                    NotificationManager.send_kite_login_alert(admin)
+                with self.app.app_context():
+                    admins = User.query.where(User.is_admin==True).all()
+                    for admin in admins:
+                        NotificationManager.send_kite_login_alert(admin)
                 return False
 
             self.kws = KiteTicker(self.k.api_key, self.k.access_token)
