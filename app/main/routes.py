@@ -40,7 +40,6 @@ def alerts():
 @bp.route('/api/alerts')
 @login_required
 def get_alerts():
-    print('alerts requested')
     alerts = Alert.query.filter_by(user_id=current_user.id).order_by(Alert.created_at.desc()).all()
     return jsonify({
         'alerts': [{
