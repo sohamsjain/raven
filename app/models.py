@@ -103,10 +103,6 @@ class User(SearchableMixin, UserMixin, db.Model):
     # Relationships
     alerts: so.Mapped[List[Alert]] = so.relationship(back_populates="user")
     zones: so.Mapped[List[Zone]] = so.relationship(back_populates="user")
-    tickers: so.WriteOnlyMapped[List[Ticker]] = so.relationship(
-        secondary='user_tickers',
-        back_populates='users'
-    )
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -116,51 +112,6 @@ class User(SearchableMixin, UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    def follow_ticker(self, ticker: Ticker) -> bool:
-        """
-        Follow a ticker if not already following.
-        Returns True if newly followed, False if already following.
-        """
-        if not self.is_following(ticker):
-            self.tickers.append(ticker)
-            db.session.commit()
-            return True
-        return False
-
-    def unfollow_ticker(self, ticker: Ticker) -> bool:
-        """
-        Unfollow a ticker if currently following.
-        Returns True if unfollowed, False if wasn't following.
-        """
-        if self.is_following(ticker):
-            self.tickers.remove(ticker)
-            db.session.commit()
-            return True
-        return False
-
-    def is_following(self, ticker: Ticker) -> bool:
-        """
-        Check if the user is following a specific ticker.
-        """
-        return ticker in self.tickers
-
-    def get_followed_tickers(self) -> List[Ticker]:
-        """
-        Get all tickers that the user follows.
-        Returns them ordered by symbol.
-        """
-        return sorted(self.tickers, key=lambda t: t.symbol)
-
-
-# Association table for User-Ticker many-to-many relationship
-user_tickers = sa.Table(
-    'user_tickers',
-    db.metadata,
-    sa.Column('user_id', sa.Integer, sa.ForeignKey('user.id'), primary_key=True),
-    sa.Column('ticker_id', sa.Integer, sa.ForeignKey('ticker.id'), primary_key=True),
-    sa.Column('added_at', sa.DateTime, default=lambda: datetime.now(timezone.utc))
-)
 
 
 class Ticker(SearchableMixin, db.Model):
@@ -176,26 +127,9 @@ class Ticker(SearchableMixin, db.Model):
     # Relationships
     alerts: so.Mapped[List[Alert]] = so.relationship(back_populates="ticker")
     zones: so.Mapped[List[Zone]] = so.relationship(back_populates="ticker")
-    users: so.WriteOnlyMapped[List[User]] = so.relationship(
-        secondary='user_tickers',
-        back_populates='tickers'
-    )
 
     def __repr__(self):
         return f'<Ticker {self.symbol}>'
-
-    def get_followers(self) -> List[User]:
-        """
-        Get all users that follow this ticker.
-        Returns them ordered by name.
-        """
-        return sorted(self.users, key=lambda u: u.name)
-
-    def get_follower_count(self) -> int:
-        """
-        Get the number of users following this ticker.
-        """
-        return len(self.users)
 
 
 class Alert(db.Model):
