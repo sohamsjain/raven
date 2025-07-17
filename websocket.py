@@ -73,18 +73,26 @@ class TickerManager:
         self.candle_timer = None
 
     def initialize_connection(self):
-        """Initialize KiteTicker connection"""
+        """Initialize KiteTicker connection with auto-login"""
         try:
-            del self.k
-            self.k = Kite()
-            if not self.k.logged_in:
-                logger.error("Kite not logged in")
+            # Clean up previous instance
+            if hasattr(self, 'k'):
+                del self.k
+                self.k = Kite()
+
+            # Ensure we're logged in (will auto-login if needed)
+            if not self.k.ensure_login():
+                logger.error("Failed to login to Kite")
+                # Send notification to admins
                 with self.app.app_context():
                     admins = User.query.where(User.is_admin==True).all()
                     for admin in admins:
                         NotificationManager.send_kite_login_alert(admin)
                 return False
 
+            logger.info("Successfully logged in to Kite")
+
+            # Initialize KiteTicker
             self.kws = KiteTicker(self.k.api_key, self.k.access_token)
             self.setup_handlers()
             self.start_candle_processor()
@@ -426,22 +434,37 @@ class TickerManager:
         return market_start <= now <= market_end
 
     def run_forever(self):
-        """Main loop to run the ticker manager continuously"""
+        """Main loop to run the ticker manager continuously with auto-retry"""
+        retry_count = 0
+        max_retries = 3
+
         while True:
             try:
                 if self.check_market_hours():
                     if not self.is_running:
                         logger.info("Market hours started. Initializing connection...")
+
                         if self.initialize_connection():
                             self.start()
+                            retry_count = 0  # Reset retry count on success
                         else:
-                            logger.error("Failed to initialize connection. Retrying in 30 seconds...")
-                            time.sleep(30)
+                            retry_count += 1
+                            if retry_count >= max_retries:
+                                logger.error(
+                                    f"Failed to initialize connection after {max_retries} attempts. Waiting 30 minutes...")
+                                time.sleep(1800)  # Wait 30 minutes before retrying
+                                retry_count = 0
+                            else:
+                                logger.error(
+                                    f"Failed to initialize connection (attempt {retry_count}/{max_retries}). Retrying in 60 seconds...")
+                                time.sleep(60)
                             continue
+
                 else:
                     if self.is_running:
                         logger.info("Market hours over. Stopping connection...")
                         self.stop()
+                        retry_count = 0  # Reset retry count when markets close
                     else:
                         next_market_time = self.get_next_market_time()
                         sleep_seconds = (next_market_time - datetime.now(IST)).total_seconds()
@@ -455,9 +478,16 @@ class TickerManager:
                 logger.error(f"Unexpected error in main loop: {e}")
                 if self.is_running:
                     self.stop()
-                time.sleep(60)  # Wait before retrying
+                retry_count += 1
+                if retry_count >= max_retries:
+                    logger.error(f"Too many errors in main loop. Waiting 10 minutes...")
+                    time.sleep(600)  # Wait 10 minutes
+                    retry_count = 0
+                else:
+                    time.sleep(60)  # Wait 1 minute before retrying
 
-    def get_next_market_time(self):
+    @staticmethod
+    def get_next_market_time():
         """Calculate the next market opening time"""
         now = datetime.now(IST)
         market_start = now.replace(hour=8, minute=15, second=0, microsecond=0)
